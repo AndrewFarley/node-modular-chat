@@ -1,2 +1,1 @@
-/chat/node-engine/processid
-/chat/node-engine/log
+/chat/node-engine/runtime/*
