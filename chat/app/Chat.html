@@ -1,0 +1,23 @@
+<div>
+    <a>{{userCount}}</a>
+    <input ng-model="chatInput" title="Press enter to send" onKeyEnter />
+</div>
+
+<div>
+    <p ng-repeat="message in messages">{{message}}</p>
+</div>
+
+<div class="buttonContainer" id="buttonContainer">
+    <button class="squareButton" onclick="WebSock.setVolume(20);">L</button>
+    <button class="squareButton" onclick="WebSock.setVolume(50);">M</button>
+    <button class="squareButton" onclick="WebSock.setVolume(100);">H</button>
+    <button class="squareButton" onclick="WebSock.sendNudge();">Nudge</button>
+    <button class="squareButton" style="right:50px;" onclick="WebSock.clearMessages();">Clear</button>
+    <button class="squareButton" style="right:50px;" onclick="WebSock.iconsOnOff();">Icons on/off</button>
+</div>
+
+<div>
+    <audio ng-repeat="sound in sounds">
+        <source ng-src="{{sound}}" type="audio/mpeg">
+    </audio>
+</div>

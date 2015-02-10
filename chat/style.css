@@ -1,0 +1,45 @@
+body, input, textarea, button {
+    color: #00645C;
+    background-color: black;
+    font-family: consolas;
+}
+.squareButton {
+    text-transform: uppercase;
+    border: 1px solid darkgreen;
+    margin: 0px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.buttonContainer {
+    right: 0px;
+    top: 50px;
+    position: fixed;
+    max-width: 108px;
+    text-align: center;
+}
+.buttonContainer img {
+
+}
+.extraWidth {
+    width:80%;
+}
+.stripInput {
+    height: 20px;
+    border: none;
+    overflow: hidden;
+}
+.chatDiv {
+    position: relative;
+    border-radius: 0px 10px 10px 10px;
+    margin-left:2px;
+}
+.icons {
+    vertical-align: middle;
+}
+.images {
+    vertical-align: middle;
+    width: 200px;
+}
+.youtubeFrames {
+    vertical-align: middle;
+}
