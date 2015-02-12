@@ -9,17 +9,18 @@
         <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.7.1/angular-material.min.js"></script>
         <script type="text/javascript" src="ng-socket.js?ver=0.1"></script>
     </head>
-    <body>
+    <body ng-app="sockItToMe" ng-controller="messageController">
         <div>
             <div style="text-align:center;">Crazy Programmers Coffee Club</div>
-            <a id="userCount"></a>
+            <a id="userCount">{{socket.setPeerCount.peerCount}}</a>
             <input id="inputField" title="Press enter to send" onkeydown="WebSock.checkSendText(event);" class="extraWidth stripInput" />
         </div>
-        <div ng-app="MyApp" ng-controller="customerList">
-            {{name + ": " + message}}
-        </div>
         
-        <div id="chatMessageDisplay" class="extraWidth chatDiv"></div>
+        <div id="chatMessageDisplay" class="extraWidth chatDiv">
+            <p ng-repeat="message in socket.postMessage">
+                {{message.name + ': ' + message.message}}
+            </p>
+        </div>
         
         <div class="buttonContainer" id="buttonContainer">
             <button class="squareButton" onclick="WebSock.setVolume(20);">L</button>
