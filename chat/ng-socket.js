@@ -34,7 +34,7 @@ sockItToMe.factory('socket', ['$q', '$rootScope', function($q, $rootScope) {
         if(objectType === 'result') {
             rpc2.result = {};
         } else if(objectType === 'error') {
-            rpc2.error = WebSock.objError;
+            rpc2.error = '';
         } else if(objectType === 'request') {
             rpc2.method = '';
             rpc2.params = {};
@@ -82,4 +82,59 @@ sockItToMe.factory('socket', ['$q', '$rootScope', function($q, $rootScope) {
 
 sockItToMe.controller('messageController', ['$scope', 'socket', function($scope, socket){
     $scope.socket = socket;
+    $scope.buttons = [
+        {
+            "name": "Volume Low"
+            , "face": "L"
+            , "style": ""
+        }
+        , {
+            "name": "Volume Medium"
+            , "face": "M"
+            , "style": ""
+        }
+        , {
+            "name": "Volume High"
+            , "face": "H"
+            , "style": ""
+        }
+        , {
+            "name": "Nudge user"
+            , "face": "Nudge"
+            , "style": ""
+        }
+        , {
+            "name": "Clear messages"
+            , "face": "Clear"
+            , "style": "right:50px;"
+        }
+        , {
+            "name": "Show/Hide icons"
+            , "face": "Icons"
+            , "style": "right:50px;"
+        }
+    ];
+    $scope.sounds = [
+        {
+            "name": "hello"
+            , "source": "sounds/hello.mp3"
+        }
+        , {
+            "name": "boom"
+            , "source": "sounds/boom.mp3"
+        }
+        , {
+            "name": "connected"
+            , "source": "sounds/connected.mp3"
+        }
+        , {
+            "name": "disconnected"
+            , "source": "sounds/disconnected.mp3"
+        }
+    ];
+    $scope.buttonHandler = function($event) {
+        console.log($event.target ? $event.target : $event.srcElement);
+        
+        return false;
+    };
 }]);

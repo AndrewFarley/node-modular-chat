@@ -12,36 +12,23 @@
     <body ng-app="sockItToMe" ng-controller="messageController">
         <div>
             <div style="text-align:center;">Crazy Programmers Coffee Club</div>
-            <a id="userCount">{{socket.setPeerCount.peerCount}}</a>
-            <input id="inputField" title="Press enter to send" onkeydown="WebSock.checkSendText(event);" class="extraWidth stripInput" />
+            <a>{{socket.setPeerCount.peerCount}}</a>
+            <input type="text" ng-model="textEntry" title="Press enter to send"class="extraWidth stripInput" />
         </div>
         
-        <div id="chatMessageDisplay" class="extraWidth chatDiv">
+        <div class="extraWidth chatDiv">
             <p ng-repeat="message in socket.postMessage">
                 {{message.name + ': ' + message.message}}
             </p>
         </div>
         
-        <div class="buttonContainer" id="buttonContainer">
-            <button class="squareButton" onclick="WebSock.setVolume(20);">L</button>
-            <button class="squareButton" onclick="WebSock.setVolume(50);">M</button>
-            <button class="squareButton" onclick="WebSock.setVolume(100);">H</button>
-            <button class="squareButton" onclick="WebSock.sendNudge();">Nudge</button>
-            <button class="squareButton" style="right:50px;" onclick="WebSock.clearMessages();">Clear</button>
-            <button class="squareButton" style="right:50px;" onclick="WebSock.iconsOnOff();">Icons on/off</button>
+        <div class="buttonContainer">
+            <button class="squareButton" ng-click="buttonHandler($event);" ng-repeat="button in buttons" title="{{button.name}}" style="{{button.style}}">{{button.face}}</button>
         </div>
-        
-        <audio name="notify" >
-            <source src="sounds/hello.mp3" type="audio/mpeg">
-        </audio>
-        <audio name="nudge">
-            <source src="sounds/boom.mp3" type="audio/mpeg">
-        </audio>
-        <audio name="connected">
-            <source src="sounds/connected.mp3" type="audio/mpeg">
-        </audio>
-        <audio name="disconnected">
-            <source src="sounds/disconnected.mp3" type="audio/mpeg">
-        </audio>
+        <div>
+            <audio ng-repeat="sound in sounds" >
+                <source src="{{sound.source}}" type="audio/mpeg"></source>
+            </audio>
+        </div>
     </body>
 </html>
