@@ -60,7 +60,19 @@ sockItToMe.factory('socket', ['$q', '$rootScope', function($q, $rootScope) {
                 });
             };
         };
+        return false;
     };
+    /*
+     * Sends data down the stream
+     */
+    var sendData = function(method, value) {
+        var data = getCleanRpcObject('request');
+        data.method = method;
+        data.params = {"name": "FuckItyBob", "message": value};
+        ws.send(JSON.stringify(data));
+        return false;
+    };
+    entryData.sendData = sendData;
     
     /*
      * Initiates a websocket connection and sets up all the necessary message handlers
@@ -114,27 +126,43 @@ sockItToMe.controller('messageController', ['$scope', 'socket', function($scope,
             , "style": "right:50px;"
         }
     ];
-    $scope.sounds = [
-        {
+    $scope.sounds = {
+        "message": {
             "name": "hello"
             , "source": "sounds/hello.mp3"
         }
-        , {
+        , "nudge": {
             "name": "boom"
             , "source": "sounds/boom.mp3"
         }
-        , {
+        , "connected": {
             "name": "connected"
             , "source": "sounds/connected.mp3"
         }
-        , {
+        , "disconnected": {
             "name": "disconnected"
             , "source": "sounds/disconnected.mp3"
         }
-    ];
+    };
     $scope.buttonHandler = function($event) {
         console.log($event.target ? $event.target : $event.srcElement);
         
         return false;
     };
+    $scope.messageChecker = function($event) {
+        if($event.keyCode === 13) {
+            console.log($scope.sounds.message.dom.play());
+            //socket.sendData('postMessage', $event.target.value);
+            $event.target.value = '';
+        };
+        return false;
+    };
 }]);
+
+sockItToMe.directive('addDomToObject', function() {
+    return function($scope, $element, $attrs) {
+        console.log($scope);
+        $scope.sound.dom = $element[0];
+        //console.log($scope);
+    };
+});

@@ -13,7 +13,7 @@
         <div>
             <div style="text-align:center;">Crazy Programmers Coffee Club</div>
             <a>{{socket.setPeerCount.peerCount}}</a>
-            <input type="text" ng-model="textEntry" title="Press enter to send"class="extraWidth stripInput" />
+            <input type="text" ng-keypress="messageChecker($event)" title="Press enter to send"class="extraWidth stripInput" />
         </div>
         
         <div class="extraWidth chatDiv">
@@ -23,10 +23,10 @@
         </div>
         
         <div class="buttonContainer">
-            <button class="squareButton" ng-click="buttonHandler($event);" ng-repeat="button in buttons" title="{{button.name}}" style="{{button.style}}">{{button.face}}</button>
+            <button class="squareButton" ng-click="buttonHandler($event);" ng-repeat="button in buttons track by button.face" title="{{button.name}}" style="{{button.style}}">{{button.face}}</button>
         </div>
         <div>
-            <audio ng-repeat="sound in sounds" >
+            <audio add-dom-to-object ng-repeat="sound in sounds track by sound.name" >
                 <source src="{{sound.source}}" type="audio/mpeg"></source>
             </audio>
         </div>
