@@ -23,10 +23,10 @@
         </div>
         
         <div class="buttonContainer">
-            <button class="squareButton" ng-click="buttonHandler($event);" ng-repeat="button in buttons track by button.face" title="{{button.name}}" style="{{button.style}}">{{button.face}}</button>
+            <button class="squareButton" add-dom-to-object="button" ng-click="buttonHandler($event);" ng-repeat="button in buttons track by button.face" title="{{button.name}}" style="{{button.style}}">{{button.face}}</button>
         </div>
         <div>
-            <audio add-dom-to-object ng-repeat="sound in sounds track by sound.name" >
+            <audio add-dom-to-object="sound" ng-repeat="sound in sounds track by sound.name" >
                 <source src="{{sound.source}}" type="audio/mpeg"></source>
             </audio>
         </div>

@@ -76,6 +76,7 @@ var WebSock = new function() {
         this.objWebsocket = new WebSocket(strWebsocketUri);
         // Defines function names to use on websocket responses
         this.objWebsocket.onerror = function(objEvent) {onError(objEvent);};
+        this.objWebsocket.onclose = function(objEvent) {onError(objEvent);};
         this.objWebsocket.onmessage = function(objEvent) {onMessage(objEvent);};
         this.objWebsocket.onopen = function(objEvent) {onOpen(objEvent);};
         
@@ -351,7 +352,8 @@ var WebSock = new function() {
         Executes if an error in the socket is received.
     */
     var onError = function(objEvent) {
-        objUserCount.innerHTML = 'Error: ' + objEvent.data;
+        objUserCount.innerHTML = 'Error: ' + objEvent.type;
+        console.log(objEvent);
         return false;
     };
     /*

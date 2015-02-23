@@ -151,7 +151,8 @@ sockItToMe.controller('messageController', ['$scope', 'socket', function($scope,
     };
     $scope.messageChecker = function($event) {
         if($event.keyCode === 13) {
-            console.log($scope.sounds.message.dom.play());
+            $scope.sounds.message.dom.play();
+            console.log($scope.sounds);
             //socket.sendData('postMessage', $event.target.value);
             $event.target.value = '';
         };
@@ -160,9 +161,10 @@ sockItToMe.controller('messageController', ['$scope', 'socket', function($scope,
 }]);
 
 sockItToMe.directive('addDomToObject', function() {
-    return function($scope, $element, $attrs) {
-        console.log($scope);
-        $scope.sound.dom = $element[0];
-        //console.log($scope);
+    return {
+        "link": function($scope, $element, $attrs) {
+            //console.log($attrs);
+            $scope[$attrs.addDomToObject].dom = $element[0];
+        }
     };
 });
