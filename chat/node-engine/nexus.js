@@ -54,14 +54,6 @@ wss.on('connection', function connection(ws) {
     // Alerts all users on a connect
     wss.clients.forEach(MessageHandler.updateUserCount);
     console.log('User connected');
-    /*
-        Endomondo temporary greeting
-    */
-    var endomondo = MessageHandler.getCleanRpcObject('request');
-    endomondo.method = 'postMessage';
-    endomondo.params.name = 'Endomondo Welcome Wagon';
-    endomondo.params.message = 'Welcome to this chat, feel free to try it out, if noone is online, we will read your messages later.';
-    ws.send(JSON.stringify(endomondo));
 });
 
 /*
