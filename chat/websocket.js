@@ -367,4 +367,4 @@ var WebSock = new function() {
 // Initiates the websocket library.
 WebSock.__constructor();
 WebSock.iconsOnOff();
-WebSock.setVolume(20);
+WebSock.setVolume(10);

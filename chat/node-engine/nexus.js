@@ -109,7 +109,7 @@ var MessageHandler = {
     , "addReplay": function(message) {
         if(message !== undefined) {
             this.data.messageReplay.unshift(message);
-            if(this.data.messageReplay.length > 25) {
+            if(this.data.messageReplay.length > 100) {
                 this.data.messageReplay.pop();
             };
             return true;
