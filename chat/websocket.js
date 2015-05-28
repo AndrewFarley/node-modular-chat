@@ -3,7 +3,7 @@ var WebSock = new function() {
     var objUserCount = document.getElementById('userCount');
     var objInputField = document.getElementById('inputField');
     
-    var arrIcons = [
+    /*var arrIcons = [
         "derp"
         , "impossibru"
         , "megusta"
@@ -22,7 +22,7 @@ var WebSock = new function() {
         , "murica"
         , "notbad"
         , "ohgodwhy"
-    ];
+    ];*/
     var objButtons = document.getElementById('buttonContainer');
     objButtons.removeAttribute('id');
     
@@ -93,7 +93,7 @@ var WebSock = new function() {
         
         // Adds a smiley viewer
         var tempIcon = {};
-        for(var i = 0; i < arrIcons.length; i += 1) {
+        /*for(var i = 0; i < arrIcons.length; i += 1) {
             tempIcon = document.createElement('img');
             tempIcon.style.width = '30px';
             tempIcon.setAttribute('src', 'icons/' + arrIcons[i] + '.png');
@@ -101,7 +101,7 @@ var WebSock = new function() {
             tempIcon.onclick = function() {WebSock.addEmoticon(event);};
             
             objButtons.appendChild(tempIcon);
-        };
+        };*/
         
         return false;
     };
@@ -135,7 +135,7 @@ var WebSock = new function() {
     /*
         Turns clickable emoticons on/off
     */
-    this.iconsOnOff = function() {
+    /*this.iconsOnOff = function() {
         var icons = objButtons.getElementsByTagName('img');
         var show = 'none';
         if(icons[0].style.display === 'none') {
@@ -148,7 +148,7 @@ var WebSock = new function() {
             icons[i].style.display = show;
         };
         return false;
-    };
+    };*/
     /*
         Volume adjuster
     */
@@ -162,13 +162,13 @@ var WebSock = new function() {
     /*
         Adds emoticons to the input field.
     */
-    this.addEmoticon = function(objEvent) {
+    /*this.addEmoticon = function(objEvent) {
         objEvent.target = (objEvent.target ? objEvent.target : objEvent.srcElement);
         objInputField.value = objInputField.value + ':' + objEvent.target.getAttribute('name') + ':';
         objInputField.focus();
         
         return false;
-    };
+    };*/
     /*
         Detects if autoclear has been set
         and clears all messages and resets the counter.
