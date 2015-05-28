@@ -3,26 +3,6 @@ var WebSock = new function() {
     var objUserCount = document.getElementById('userCount');
     var objInputField = document.getElementById('inputField');
     
-    /*var arrIcons = [
-        "derp"
-        , "impossibru"
-        , "megusta"
-        , "sweetjesus"
-        , "foreveralone"
-        , "kiddingme"
-        , "mingew"
-        , "umad"
-        , "fuuu"
-        , "lol"
-        , "noclue"
-        , "yuno"
-        , "wat"
-        , "letsgo"
-        , "hellokitty"
-        , "murica"
-        , "notbad"
-        , "ohgodwhy"
-    ];*/
     var objButtons = document.getElementById('buttonContainer');
     objButtons.removeAttribute('id');
     
@@ -91,17 +71,8 @@ var WebSock = new function() {
         objUserCount.removeAttribute('id');
         objInputField.removeAttribute('id');
         
-        // Adds a smiley viewer
-        var tempIcon = {};
-        /*for(var i = 0; i < arrIcons.length; i += 1) {
-            tempIcon = document.createElement('img');
-            tempIcon.style.width = '30px';
-            tempIcon.setAttribute('src', 'icons/' + arrIcons[i] + '.png');
-            tempIcon.setAttribute('name', arrIcons[i]);
-            tempIcon.onclick = function() {WebSock.addEmoticon(event);};
-            
-            objButtons.appendChild(tempIcon);
-        };*/
+        // Set default volume to 10
+        this.setVolume(10);
         
         return false;
     };
@@ -133,23 +104,6 @@ var WebSock = new function() {
         return false;
     };
     /*
-        Turns clickable emoticons on/off
-    */
-    /*this.iconsOnOff = function() {
-        var icons = objButtons.getElementsByTagName('img');
-        var show = 'none';
-        if(icons[0].style.display === 'none') {
-            show = '';
-        }
-        else {
-            show = 'none';
-        };
-        for(var i = 0; i < icons.length; i += 1) {
-            icons[i].style.display = show;
-        };
-        return false;
-    };*/
-    /*
         Volume adjuster
     */
     this.setVolume = function(volumePercentage) {
@@ -159,16 +113,6 @@ var WebSock = new function() {
         };
         return false;
     };
-    /*
-        Adds emoticons to the input field.
-    */
-    /*this.addEmoticon = function(objEvent) {
-        objEvent.target = (objEvent.target ? objEvent.target : objEvent.srcElement);
-        objInputField.value = objInputField.value + ':' + objEvent.target.getAttribute('name') + ':';
-        objInputField.focus();
-        
-        return false;
-    };*/
     /*
         Detects if autoclear has been set
         and clears all messages and resets the counter.
@@ -334,9 +278,8 @@ var WebSock = new function() {
     var setText = function(strMessage) {
         var objParagraph = document.createElement('p');
         strMessage = strMessage.replace(/\S+(youtube)\S+v=([a-zA-Z0-9_\-]+)\S*/gim, '<iframe style="youtubeFrame" width="320" height="320" src="//www.youtube.com/embed/$2" frameborder="0" allowfullscreen></iframe>');
-        strMessage = strMessage.replace(/(\S+)\.(png|jpg|gif)/gim, '<img class="images" src="$1.$2" />');
-        strMessage = strMessage.replace(/:(\w+):/gim, '<img class="icons" src="icons/$1.png" />');
-        strMessage = strMessage.replace(/\s(http[s]?:\S+)/gim, '<a href="$1" target="_blank">$1</a>');
+        strMessage = strMessage.replace(/:(\w+):/gim, '<img class="images" src="$1" />');
+        strMessage = strMessage.replace(/\s(http[s]?:\S+)/gim, ' <a href="$1" target="_blank">$1</a>');
         objParagraph.innerHTML = strMessage;
         
         if(objOutput.hasChildNodes()) {
@@ -366,5 +309,3 @@ var WebSock = new function() {
 };
 // Initiates the websocket library.
 WebSock.__constructor();
-WebSock.iconsOnOff();
-WebSock.setVolume(10);

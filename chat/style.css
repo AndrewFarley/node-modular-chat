@@ -17,9 +17,6 @@ body, input, textarea, button {
     max-width: 108px;
     text-align: center;
 }
-.buttonContainer img {
-
-}
 .extraWidth {
     width:80%;
 }
@@ -32,9 +29,6 @@ body, input, textarea, button {
     position: relative;
     border-radius: 0px 10px 10px 10px;
     margin-left:2px;
-}
-.icons {
-    vertical-align: middle;
 }
 .images {
     vertical-align: middle;
