@@ -9,17 +9,17 @@
     <body>
         <div>
             <a id="userCount"></a>
-            <input id="inputField" title="Press enter to send" onkeydown="WebSock.checkSendText(event);" class="extraWidth stripInput" />
+            <input id="inputField" title="Press enter to send" onkeydown="SockLib.checkSendText(event);" class="extraWidth stripInput" />
         </div>
         
         <div id="chatMessageDisplay" class="extraWidth chatDiv"></div>
         
         <div class="buttonContainer" id="buttonContainer">
-            <button class="squareButton" onclick="WebSock.setVolume(10);">L</button>
-            <button class="squareButton" onclick="WebSock.setVolume(50);">M</button>
-            <button class="squareButton" onclick="WebSock.setVolume(100);">H</button>
-            <button class="squareButton" onclick="WebSock.sendNudge();">Nudge</button>
-            <button class="squareButton" style="right:50px;" onclick="WebSock.clearMessages();">Clear</button>
+            <button class="squareButton" onclick="SockLib.setVolume(10);">L</button>
+            <button class="squareButton" onclick="SockLib.setVolume(50);">M</button>
+            <button class="squareButton" onclick="SockLib.setVolume(100);">H</button>
+            <button class="squareButton" onclick="SockLib.sendNudge();">Nudge</button>
+            <button class="squareButton" style="right:50px;" onclick="SockLib.clearMessages();">Clear</button>
         </div>
         
         <audio name="notify" >
