@@ -278,7 +278,7 @@ var WebSock = new function() {
     var setText = function(strMessage) {
         var objParagraph = document.createElement('p');
         strMessage = strMessage.replace(/\S+(youtube)\S+v=([a-zA-Z0-9_\-]+)\S*/gim, '<iframe style="youtubeFrame" width="320" height="320" src="//www.youtube.com/embed/$2" frameborder="0" allowfullscreen></iframe>');
-        strMessage = strMessage.replace(/:(\w+):/gim, '<img class="images" src="$1" />');
+        strMessage = strMessage.replace(/!!(\w+)!!/gim, '<img class="images" src="$1" />');
         strMessage = strMessage.replace(/\s(http[s]?:\S+)/gim, ' <a href="$1" target="_blank">$1</a>');
         objParagraph.innerHTML = strMessage;
         
