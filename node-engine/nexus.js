@@ -12,14 +12,14 @@ wss.on('connection', function connection(ws) {
         Only logs opened connections
     */
     ws.on('open', function incoming(message) {
-        console.log('open');
+        console.log('User connect');
     });
     /*
         Alerts users on a user disconnect
     */
     ws.on('close', function incoming(message) {
         wss.clients.forEach(MessageHandler.updateUserCount);
-        console.log('User disconnected');
+        console.log('User disconnect');
     });
     /*
         Only logs errors
@@ -49,11 +49,13 @@ wss.on('connection', function connection(ws) {
             MessageHandler[parsedMessage.method](ws, parsedMessage.params);
         };
         // Logs type of message with parameters
-        console.log(parsedMessage.method + ': ' + JSON.stringify(parsedMessage.params));
+        if(MessageHandler.data.passThroughList.hasOwnProperty(parsedMessage.method)) {
+            console.log('Call: ' + parsedMessage.method);
+        };
     });
     // Alerts all users on a connect
     wss.clients.forEach(MessageHandler.updateUserCount);
-    console.log('User connected');
+    //console.log('User connected');
 });
 
 /*
@@ -97,7 +99,7 @@ var MessageHandler = {
     */
     , "updateUserCount": function(client) {
         var request = MessageHandler.getCleanRpcObject('request');
-        console.log(request.id);
+        console.log('Users: ' + request.id);
         request.method = 'setPeerCount';
         request.params.peerCount = wss.clients.length.toString();
         client.send(JSON.stringify(request));
