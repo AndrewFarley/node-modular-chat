@@ -57,7 +57,7 @@ var SockLib = {
         }
         , {
             "regex": /\s(http[s]?:\S+)/gim
-            , "replace": '<a href="$1" target="_blank">$1</a>'
+            , "replace": ' <a href="$1" target="_blank">$1</a>'
         }
     ]
     
