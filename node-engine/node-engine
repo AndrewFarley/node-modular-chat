@@ -6,7 +6,7 @@ start () {
     if [ -f $PIDF ]; then
         echo "Already running"
     else
-        /home/nexus/node/bin/node nexus.js > log 2>&1 &
+        /home/nexus/node/bin/node node-engine.js > log 2>&1 &
         echo $! > $PIDF
     fi
 }
