@@ -1,70 +1,10 @@
-/*
-    Create websocketservice
-*/
-var WebSocketServer = require('ws').Server;
-var wss = new WebSocketServer({"port": 8080});
+/**
+ * Create websocketservice
+ */
+var wss = require('ws').Server;
+var WebSocketServer = new wss({"port": parseInt(process.argv[0])});
 
-/*
-    Initial setup of websocketservice and logging
-*/
-wss.on('connection', function connection(ws) {
-    /*
-        Only logs opened connections
-    */
-    ws.on('open', function incoming(message) {
-        console.log('User connect');
-    });
-    /*
-        Alerts users on a user disconnect
-    */
-    ws.on('close', function incoming(message) {
-        wss.clients.forEach(MessageHandler.updateUserCount);
-        console.log('User disconnect');
-    });
-    /*
-        Only logs errors
-    */
-    ws.on('error', function incoming(error) {
-        console.log(error);
-    });
-    /*
-        Parses the message logic and does different things dependent on the message
-    */
-    ws.on('message', function incoming(message) {
-        var parsedMessage = JSON.parse(message);
-        // Checks a message if it is allowed for broadcast
-        if(MessageHandler.data.passThroughList[parsedMessage.method]) {
-            // Adds broadcast messages to replay list
-            MessageHandler.addReplay(message);
-            // Broadcasts messages
-            wss.clients.forEach(function(client) {
-                if(client !== ws) {
-                    client.send(message);
-                };
-            });
-        }
-        // Checks if a message is allowed to communicate with the server
-        else if(MessageHandler.data.functionList[parsedMessage.method]) {
-            // Executes a server function, per request from a client
-            MessageHandler[parsedMessage.method](ws, parsedMessage.params);
-        };
-        // Logs type of message with parameters
-        if(MessageHandler.data.passThroughList.hasOwnProperty(parsedMessage.method)) {
-            console.log('Call: ' + parsedMessage.method);
-        };
-    });
-    // Alerts all users on a connect
-    wss.clients.forEach(MessageHandler.updateUserCount);
-    //console.log('User connected');
-});
-
-/*
-    Data handling class for the websocketservice
-*/
-var MessageHandler = {
-    /*
-        Data variables used by the server
-    */
+var SockLib = {
     "data": {
         "idCounter": 0
         , "passThroughList": {
@@ -76,9 +16,62 @@ var MessageHandler = {
         }
         , "messageReplay": []
     }
-    /*
-        Cleans JSON RPC 2.0 objects for new use.
-    */
+    "handlers" : {
+        "connection": function(webSocket) {
+            webSocket.on('open', this.handlers.open);
+            webSocket.on('close', this.handlers.close);
+            webSocket.on('error', this.handlers.error);
+            webSocket.on('message', this.handlers.message);
+            this.handlers.updateClients();
+        }
+        , "open": function(message) {
+            console.log(message);
+        }
+        , "close": function(message) {
+            this.handlers.updateClients();
+            console.log(message);
+        }
+        , "error": function(error) {
+            console.log(error);
+        }
+        , "message": function(message) {
+            var parsedMessage = JSON.parse(message);
+            // Checks a message if it is allowed for broadcast
+            if(this.data.passThroughList[parsedMessage.method]) {
+                // Adds broadcast messages to replay list
+                this.addReplay(message);
+                // Broadcasts messages
+                WebSocketServer.clients.forEach(function(client) {
+                    if(client !== webSocket) {
+                        client.send(message);
+                    };
+                });
+            }
+            // Checks if a message is allowed to communicate with the server
+            else if(this.data.functionList[parsedMessage.method]) {
+                // Executes a server function, per request from a client
+                this[parsedMessage.method](webSocket, parsedMessage.params);
+            };
+            // Logs type of message with parameters
+            if(this.data.passThroughList.hasOwnProperty(parsedMessage.method)) {
+                console.log('Call: ' + parsedMessage.method);
+            };
+        }
+        , "updateClients": function() {
+            WebSocketServer.clients.forEach(this.updateUserCount);
+        }
+    }
+    , "__construct": function() {
+        WebSocketServer.on('connection', this.handlers.connection);
+    }
+    , "updateUserCount": function(client) {
+        var request = this.getCleanRpcObject('request');
+        console.log('Users: ' + request.id);
+        request.method = 'setPeerCount';
+        request.params.peerCount = WebSocketServer.clients.length.toString();
+        client.send(JSON.stringify(request));
+        return false;
+    }
     , "getCleanRpcObject": function(objectType) {
         this.data.idCounter += 1;
         var rpc2 = {"jsonrpc": "2.0", "id": this.data.idCounter};
@@ -94,20 +87,6 @@ var MessageHandler = {
         
         return rpc2;
     }
-    /*
-        Sends a message to all users about a user disconnecting/connecting
-    */
-    , "updateUserCount": function(client) {
-        var request = MessageHandler.getCleanRpcObject('request');
-        console.log('Users: ' + request.id);
-        request.method = 'setPeerCount';
-        request.params.peerCount = wss.clients.length.toString();
-        client.send(JSON.stringify(request));
-        return false;
-    }
-    /*
-        Automatically builds up an array of previous messages up to 25
-    */
     , "addReplay": function(message) {
         if(message !== undefined) {
             this.data.messageReplay.unshift(message);
@@ -118,9 +97,6 @@ var MessageHandler = {
         };
         return false;
     }
-    /*
-        On request, prints out the x last messages recorded to a single user
-    */
     , "requestReplay": function(client, params) {
         var maxReplay = this.data.messageReplay.length;
         if(params.hasOwnProperty('replayCount')) {
@@ -132,3 +108,4 @@ var MessageHandler = {
         return false;
     }
 };
+SockLib.__construct();
