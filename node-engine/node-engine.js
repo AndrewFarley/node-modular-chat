@@ -2,7 +2,7 @@
  * Create websocketservice
  */
 var wss = require('ws').Server;
-var WebSocketServer = new wss({"port": parseInt(process.argv[0])});
+var WebSocketServer = new wss({"port": parseInt(process.argv[2])});
 
 var SockLib = {
     "data": {
@@ -16,56 +16,63 @@ var SockLib = {
         }
         , "messageReplay": []
     }
-    "handlers" : {
+    , "handlers" : {
         "connection": function(webSocket) {
-            webSocket.on('open', this.handlers.open);
-            webSocket.on('close', this.handlers.close);
-            webSocket.on('error', this.handlers.error);
-            webSocket.on('message', this.handlers.message);
-            this.handlers.updateClients();
+            var main = SockLib;
+            main.data.webSocket = webSocket;
+            console.log(main);
+            webSocket.on('open', main.handlers.open);
+            webSocket.on('close', main.handlers.close);
+            webSocket.on('error', main.handlers.error);
+            webSocket.on('message', main.handlers.message);
+            main.handlers.updateClients();
         }
         , "open": function(message) {
             console.log(message);
         }
         , "close": function(message) {
-            this.handlers.updateClients();
+            var main = SockLib;
+            main.handlers.updateClients();
             console.log(message);
         }
         , "error": function(error) {
             console.log(error);
         }
         , "message": function(message) {
+            var main = SockLib;
             var parsedMessage = JSON.parse(message);
             // Checks a message if it is allowed for broadcast
-            if(this.data.passThroughList[parsedMessage.method]) {
+            if(main.data.passThroughList[parsedMessage.method]) {
                 // Adds broadcast messages to replay list
-                this.addReplay(message);
+                main.addReplay(message);
                 // Broadcasts messages
                 WebSocketServer.clients.forEach(function(client) {
-                    if(client !== webSocket) {
+                    if(client !== main.data.webSocket) {
                         client.send(message);
                     };
                 });
             }
             // Checks if a message is allowed to communicate with the server
-            else if(this.data.functionList[parsedMessage.method]) {
+            else if(main.data.functionList[parsedMessage.method]) {
                 // Executes a server function, per request from a client
-                this[parsedMessage.method](webSocket, parsedMessage.params);
+                main[parsedMessage.method](webSocket, parsedMessage.params);
             };
             // Logs type of message with parameters
-            if(this.data.passThroughList.hasOwnProperty(parsedMessage.method)) {
+            if(main.data.passThroughList.hasOwnProperty(parsedMessage.method)) {
                 console.log('Call: ' + parsedMessage.method);
             };
         }
         , "updateClients": function() {
-            WebSocketServer.clients.forEach(this.updateUserCount);
+            var main = SockLib;
+            WebSocketServer.clients.forEach(main.updateUserCount);
         }
     }
     , "__construct": function() {
         WebSocketServer.on('connection', this.handlers.connection);
     }
     , "updateUserCount": function(client) {
-        var request = this.getCleanRpcObject('request');
+        var main = SockLib;
+        var request = main.getCleanRpcObject('request');
         console.log('Users: ' + request.id);
         request.method = 'setPeerCount';
         request.params.peerCount = WebSocketServer.clients.length.toString();
