@@ -80,3 +80,12 @@ var JsonRpc = {
         return this.getError('-32600');
     }
 };
+/**
+ *  Adds the ability to use it with NodeJS
+ */
+try {
+    exports.JsonRpc = JsonRpc;
+}
+catch(error) {
+    // No need to do anything
+};

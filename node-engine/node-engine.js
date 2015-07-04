@@ -2,6 +2,7 @@
  * Create websocketservice
  */
 var wss = require('ws').Server;
+var JsonRpc = require('../chat/js/JsonRpc.js').JsonRpc;
 var WebSocketServer = new wss({"port": parseInt(process.argv[2])});
 
 var SockLib = {
@@ -40,9 +41,9 @@ var SockLib = {
         }
         , "message": function(message) {
             var main = SockLib;
-            var parsedMessage = JSON.parse(message);
+            var jsonRpc = JsonRpc.parse(message);
             // Checks a message if it is allowed for broadcast
-            if(main.data.passThroughList[parsedMessage.method]) {
+            if(main.data.passThroughList[jsonRpc.method]) {
                 // Adds broadcast messages to replay list
                 main.addReplay(message);
                 // Broadcasts messages
@@ -53,13 +54,13 @@ var SockLib = {
                 });
             }
             // Checks if a message is allowed to communicate with the server
-            else if(main.data.functionList[parsedMessage.method]) {
+            else if(main.data.functionList[jsonRpc.method]) {
                 // Executes a server function, per request from a client
-                main[parsedMessage.method](webSocket, parsedMessage.params);
+                main[jsonRpc.method](webSocket, jsonRpc.params);
             };
             // Logs type of message with parameters
-            if(main.data.passThroughList.hasOwnProperty(parsedMessage.method)) {
-                console.log('Call: ' + parsedMessage.method);
+            if(main.data.passThroughList.hasOwnProperty(jsonRpc.method)) {
+                console.log('Call: ' + jsonRpc.method);
             };
         }
         , "updateClients": function() {
@@ -72,27 +73,12 @@ var SockLib = {
     }
     , "updateUserCount": function(client) {
         var main = SockLib;
-        var request = main.getCleanRpcObject('request');
-        console.log('Users: ' + request.id);
-        request.method = 'setPeerCount';
-        request.params.peerCount = WebSocketServer.clients.length.toString();
-        client.send(JSON.stringify(request));
+        var jsonRpc = JsonRpc.getRequest();;
+        console.log('Users: ' + jsonRpc.id);
+        jsonRpc.method = 'setPeerCount';
+        jsonRpc.params.peerCount = WebSocketServer.clients.length.toString();
+        client.send(JSON.stringify(jsonRpc));
         return false;
-    }
-    , "getCleanRpcObject": function(objectType) {
-        this.data.idCounter += 1;
-        var rpc2 = {"jsonrpc": "2.0", "id": this.data.idCounter};
-        
-        if(objectType === 'result') {
-            rpc2.result = {};
-        } else if(objectType === 'error') {
-            rpc2.error = WebSock.objError;
-        } else if(objectType === 'request') {
-            rpc2.method = '';
-            rpc2.params = {};
-        };
-        
-        return rpc2;
     }
     , "addReplay": function(message) {
         if(message !== undefined) {
