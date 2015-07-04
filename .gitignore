@@ -1,3 +1,3 @@
 /node-engine/processid
 /node-engine/log
-/node-engine/node_modules
+/node-engine/node_modules/ws
