@@ -3,16 +3,17 @@
  *
  * @author Kristian B
  */
-var SockLib = {
+var SockLib = new function() {
+    var main = this;
     /* DOM selector group */
-    "domSelector": {
+    this.domSelector = {
         "chatMessageDisplay": {}
         , "userCount": {}
         , "inputField": {}
         , "buttonContainer": {}
-    }
+    };
     /* Misc options */
-    , "options": {
+    this.options = {
         "messageCount": 0
         , "parameters": {}
         , "audioTags": {}
@@ -21,11 +22,11 @@ var SockLib = {
             , "message": ""
             , "data": ""
         }
-    }
+    };
     /* Socket connector */
-    , "socket": {}
+    this.socket = {};
     /* Message string parser */
-    , "stringParse": [
+    this.stringParse = [
         {
             "regex": /\S+(youtube)\S+v=([a-zA-Z0-9_\-]+)\S*/gim
             , "replace": '<iframe style="youtubeFrame" width="320" height="320" src="//www.youtube.com/embed/$2" frameborder="0" allowfullscreen></iframe>'
@@ -38,7 +39,7 @@ var SockLib = {
             "regex": /\s(http[s]?:\S+)/gim
             , "replace": ' <a href="$1" target="_blank">$1</a>'
         }
-    ]
+    ];
     
     /**
      * Locates all appropriate DOM, fetches and sets default uri parameters,
@@ -46,7 +47,8 @@ var SockLib = {
      *
      * @constructor
      */
-    , "__construct": function() {
+    this.__construct = function() {
+        main.JsonRpc = new JsonRpc();
         // Loads needed dom objects into object
         for(var dom in this.domSelector) {
             this.domSelector[dom] = document.getElementById(dom);
@@ -87,11 +89,11 @@ var SockLib = {
         this.setVolume(10);
         
         return false;
-    }
+    };
     /**
      * Initiates a socket connection, based on the options.parameters
      */
-    , "connectSocket": function() {
+    this.connectSocket = function() {
         var uri = 'ws://' + this.options.parameters.host + ':' + this.options.parameters.port + '/nexus/socket';
         this.socket = new WebSocket(uri);
         this.socket.onerror = function(eventObject) {SockLib.onError(eventObject);};
@@ -99,25 +101,25 @@ var SockLib = {
         this.socket.onmessage = function(eventObject) {SockLib.onMessage(eventObject);};
         this.socket.onopen = function(eventObject) {SockLib.onOpen(eventObject);};
         return false;
-    }
+    };
     /**
      * Checks if enter is hit in the input box and sends it when enter is pressed,
      * this is done because it is attached to an event on the input tag.
      *
      * @param {Object} eventObject - JS Event object
      */
-    , "checkSendText": function(eventObject) {
+    this.checkSendText = function(eventObject) {
         eventObject.target = (eventObject.target ? eventObject.target : eventObject.srcElement);
         if(eventObject.keyCode === 13) {
             this.sendText(eventObject.target.value);
             eventObject.target.value = '';
         };
         return false;
-    }
+    };
     /**
      * Hides all messages
      */
-    , "clearMessages": function() {
+    this.clearMessages = function() {
         var messageList = this.domSelector.chatMessageDisplay.childNodes;
         for(var i = 0; i < messageList.length; i += 1) {
             if(typeof messageList[i] === 'object') {
@@ -128,25 +130,25 @@ var SockLib = {
             };
         };
         return false;
-    }
+    };
     /**
      * Volume adjuster
      *
      * @param {number} volumePercentage - Volume from 0 to 100 percent
      */
-    , "setVolume": function(volumePercentage) {
+    this.setVolume = function(volumePercentage) {
         var volume = volumePercentage / 100;
         for(var i in this.options.audioTags) {
             this.options.audioTags[i].volume = volume;
         };
         return false;
-    }
+    };
     /**
      * Sets message counter or adds 1 to the counter
      *
      * @param {number} counter - Number to set message counter to
      */
-    , "updateWindow": function(counter) {
+    this.updateWindow = function(counter) {
         if(typeof counter === 'number') {
             this.options.messageCount = counter;
         }
@@ -156,35 +158,35 @@ var SockLib = {
         document.title = this.options.messageCount + ' new';
         
         return false;
-    }
+    };
     /**
      * Plays mp3 notification, from it's notification name
      *
      * @param {string} playSelection - Notification name
      */
-    , "playNotifications": function(playSelection) {
+    this.playNotifications = function(playSelection) {
         this.options.audioTags[playSelection].currentTime = 0;
         this.options.audioTags[playSelection].play();
         
         return false;
-    }
+    };
     /**
      * Prints last x messages
      *
      * @param {number} replayCount - The amount of messages to replay
      */
-    , "replay": function(replayCount) {
-        var jsonRpc = JsonRpc.getRequest();
+    this.replay = function(replayCount) {
+        var jsonRpc = main.JsonRpc.getRequest();
         jsonRpc.method = 'requestReplay';
         jsonRpc.params.replayCount = replayCount;
         SockLib.socket.send(JSON.stringify(jsonRpc));
         return false;
-    }
+    };
     /**
      * Executes a keep alive to keep the connection up
      */
-    , "keepItAlive": function() {
-        var jsonRpc = JsonRpc.getRequest();
+    this.keepItAlive = function() {
+        var jsonRpc = main.JsonRpc.getRequest();
         jsonRpc.method = 'keepAlive';
         try {
             SockLib.socket.send(JSON.stringify(jsonRpc));
@@ -197,35 +199,35 @@ var SockLib = {
         setTimeout("SockLib.keepItAlive();", 30000);
         
         return false;
-    }
+    };
     /**
      * Sends a nudge to other clients.
      */
-    , "sendNudge": function() {
-        var jsonRpc = JsonRpc.getRequest();
+    this.sendNudge = function() {
+        var jsonRpc = main.JsonRpc.getRequest();
         jsonRpc.method = 'nudge';
         SockLib.socket.send(JSON.stringify(jsonRpc));
         
         return false;
-    }
+    };
     /**
      * Plays notification when nudges are received.
      *
      * @param {Object} eventObject - JS Event object
      * @param {Object} parameters - JSON RPC parameters
      */
-    , "nudge": function(eventObject, parameters) {
+    this.nudge = function(eventObject, parameters) {
         SockLib.playNotifications('nudge');
         
         return false;
-    }
+    };
     /**
      * Sets the peer count if received and notifies if a user left or joined.
      *
      * @param {Object} eventObject - JS Event object
      * @param {Object} parameters - JSON RPC parameters
      */
-    , "setPeerCount": function(eventObject, parameters) {
+    this.setPeerCount = function(eventObject, parameters) {
         var count = parseInt(this.domSelector.userCount.innerHTML);
         var playSelection = 'connected';
         if(count > parameters.peerCount) {
@@ -235,27 +237,27 @@ var SockLib = {
         SockLib.playNotifications(playSelection);
         
         return false;
-    }
+    };
     /**
      * Displays received messages and plays a notification.
      *
      * @param {Object} eventObject - JS Event object
      * @param {Object} parameters - JSON RPC parameters
      */
-    , "postMessage": function(eventObject, parameters) {
+    this.postMessage = function(eventObject, parameters) {
         this.updateWindow();
         this.setText(parameters.name + ': ' + parameters.message);
         this.playNotifications('notify');
         
         return false;
-    }
+    };
     /**
      * Receives all messages sent from the server.
      *
      * @param {Object} eventObject - WebSocket Event
      */
-    , "onMessage": function(eventObject) {
-        var rpc = JsonRpc.parse(eventObject.data);
+    this.onMessage = function(eventObject) {
+        var rpc = main.JsonRpc.parse(eventObject.data);
         
         if(rpc.hasOwnProperty('method')) {
             // JSON RPC automatic callback.
@@ -271,14 +273,14 @@ var SockLib = {
         };
         
         return false;
-    }
+    };
     /**
      * Sends a message, wrapped in a JSON RPC object.
      *
      * @param {string} message - Input message
      */
-    , "sendText": function (message) {
-        var jsonRpc = JsonRpc.getRequest();
+    this.sendText = function (message) {
+        var jsonRpc = main.JsonRpc.getRequest();
         jsonRpc.method = 'postMessage';
         jsonRpc.params = {
             "name": SockLib.options.parameters.name
@@ -289,13 +291,13 @@ var SockLib = {
         
         SockLib.socket.send(JSON.stringify(jsonRpc));
         return false;
-    }
+    };
     /**
      * Appends a paragraph message and username to the chat div.
      *
      * @param {string} message - Message to insert
      */
-    , "setText": function(message) {
+    this.setText = function(message) {
         var domParagraph = document.createElement('p');
         for(var i = 0; i < this.stringParse.length; i += 1) {
             var parse = this.stringParse[i];
@@ -311,24 +313,24 @@ var SockLib = {
         };
         
         return false;
-    }
+    };
     /**
      * Executes if an error in the socket is received.
      *
      * @param {Object} eventObject - WebSocket Event
      */
-    , "onError": function(eventObject) {
+    this.onError = function(eventObject) {
         SockLib.setText('Error: ' + eventObject.type);
         
         return false;
-    }
+    };
     /**
      * Executes when a socket connection is established.
      */
-    , "onOpen": function() {
+    this.onOpen = function() {
         this.setText('!Connected to socket!');
         return false;
-    }
+    };
 };
 // Initiates the websocket library.
 SockLib.__construct();

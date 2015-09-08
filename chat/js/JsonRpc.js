@@ -3,8 +3,8 @@
  *
  * @author Kristian B
  */
-var JsonRpc = {
-    "data": {
+var JsonRpc = function() {
+    this.data = {
         /* RPC id counter */
         "jsonId": 0
         /* RPC version */
@@ -25,14 +25,14 @@ var JsonRpc = {
                 , "id": parent.data.jsonId
             };
         }
-    }
+    };
     /**
      * Fetches a new instance of an RPC error
      *
      * @param {string} code - RPC error code
      * @return {Object} rpc - RPC error object
      */
-    , "getError": function(code) {
+    this.getError =  function(code) {
         var rpc = new this.data.body(this);
         if(this.data.errorCodes.hasOwnProperty(code)) {
             rpc.error = {
@@ -42,13 +42,13 @@ var JsonRpc = {
             };
         };
         return rpc;
-    }
+    };
     /**
      * Fetches a new instance of an RPC request
      *
      * @return {Object} rpc - RPC request object
      */
-    , "getRequest": function() {
+    this.getRequest = function() {
         var rpc = new this.data.body(this);
         rpc.params = {};
         rpc.method = '';
@@ -59,7 +59,7 @@ var JsonRpc = {
      *
      * @return {Object} rpc - RPC result object
      */
-    , "getResult": function() {
+    this.getResult = function() {
         var rpc = new this.data.body(this);
         rpc.result = {};
         return rpc;
@@ -70,7 +70,7 @@ var JsonRpc = {
      * @param {string} rpc - Serialized RPC object
      * @return {Object} - RPC object
      */
-    , "parse": function(rpc) {
+    this.parse = function(rpc) {
         var jsonRpc = JSON.parse(rpc);
         if(jsonRpc.hasOwnProperty('id') && jsonRpc.hasOwnProperty('jsonrpc')) {
             if(jsonRpc.id > 0 && jsonRpc.jsonrpc === this.data.version) {
