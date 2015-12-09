@@ -1,8 +1,3 @@
-/**
- * JSON RPC handling library
- *
- * @author Kristian B
- */
 var JsonRpc = function() {
     this.data = {
         /* RPC id counter */
@@ -26,12 +21,6 @@ var JsonRpc = function() {
             };
         }
     };
-    /**
-     * Fetches a new instance of an RPC error
-     *
-     * @param {string} code - RPC error code
-     * @return {Object} rpc - RPC error object
-     */
     this.getError =  function(code) {
         var rpc = new this.data.body(this);
         if(this.data.errorCodes.hasOwnProperty(code)) {
@@ -43,33 +32,17 @@ var JsonRpc = function() {
         };
         return rpc;
     };
-    /**
-     * Fetches a new instance of an RPC request
-     *
-     * @return {Object} rpc - RPC request object
-     */
     this.getRequest = function() {
         var rpc = new this.data.body(this);
         rpc.params = {};
         rpc.method = '';
         return rpc;
     }
-    /**
-     * Fetches a new instance of an RPC result
-     *
-     * @return {Object} rpc - RPC result object
-     */
     this.getResult = function() {
         var rpc = new this.data.body(this);
         rpc.result = {};
         return rpc;
     }
-    /**
-     * Parses an incoming JSON RPC string and checks it for validity
-     *
-     * @param {string} rpc - Serialized RPC object
-     * @return {Object} - RPC object
-     */
     this.parse = function(rpc) {
         var jsonRpc = JSON.parse(rpc);
         if(jsonRpc.hasOwnProperty('id') && jsonRpc.hasOwnProperty('jsonrpc')) {
@@ -80,9 +53,6 @@ var JsonRpc = function() {
         return this.getError('-32600');
     }
 };
-/**
- *  Adds the ability to use it with NodeJS
- */
 try {
     exports.JsonRpc = JsonRpc;
 }
